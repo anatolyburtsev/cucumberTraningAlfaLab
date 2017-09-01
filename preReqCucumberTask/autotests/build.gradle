@@ -1,0 +1,54 @@
+buildscript {
+    repositories { jcenter() }
+
+    dependencies {
+        classpath 'ru.alfalab.gradle:cucumber-parallel-test-gradle-plugin:0.2.1'
+        classpath 'ru.alfalab.gradle:cucumber-reporting-gradle-plugin:0.1.0'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'ru.alfalab.cucumber-parallel-test'
+apply plugin: 'ru.alfalab.cucumber-reporting'
+
+
+description = "autotests"
+generateRunner.glue = ["ru.alfabank.steps","steps"]
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'info.cukes', name: 'cucumber-java', version: '1.2.5'
+    compile group: 'com.codeborne', name: 'selenide', version: '4.5.1'
+    compile group: "org.reflections", name: "reflections", version: "0.9.10"
+    compile group: 'org.json', name: 'json', version:'20160810'
+    compile group: 'org.projectlombok', name: 'lombok', version:'1.16.10'
+    compile group: 'io.rest-assured', name:'rest-assured', version:'3.0.1'
+}
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+test {
+    maxParallelForks = 10
+    ignoreFailures = true
+
+    jvmArgs += "-Dbrowser=chrome"
+    jvmArgs += "-Dprofile=${profile}"
+    jvmArgs += "-Dfile.encoding=UTF-8"
+    jvmArgs += "-Dselenide.pageLoadStrategy=none"
+
+    if (remoteHub) {
+        jvmArgs += "-Dremote=${remoteHub}"
+    }
+
+    reports {
+        html.enabled = false
+        junitXml.enabled = false
+    }
+}
