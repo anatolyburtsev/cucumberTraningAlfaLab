@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: cucumber-edu-rest
+
+default_params:
+  initialSum: 100
